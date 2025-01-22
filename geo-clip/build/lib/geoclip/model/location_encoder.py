@@ -53,6 +53,11 @@ class LocationEncoder(nn.Module):
         if from_pretrained:
             self._load_weights()
 
+    def to(self, device):
+        for i in range(self.n):
+            self._modules['LocEnc' + str(i)].to(device)
+        return super().to(device)
+
     def _load_weights(self):
         self.load_state_dict(torch.load(f"{file_dir}/weights/location_encoder_weights.pth"))
 

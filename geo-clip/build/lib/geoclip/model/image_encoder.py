@@ -19,6 +19,11 @@ class ImageEncoder(nn.Module):
         for param in self.CLIP.parameters():
             param.requires_grad = False
 
+    def to(self, device):
+        self.CLIP.to(device)
+        self.mlp.to(device)
+        return super().to(device)
+
     def preprocess_image(self, image):
         x = self.image_processor(images=image, return_tensors="pt")["pixel_values"]
         return x

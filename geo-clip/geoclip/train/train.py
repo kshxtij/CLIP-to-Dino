@@ -24,13 +24,10 @@ def train(train_dataloader, model, optimizer, epoch, batch_size, device, schedul
 
         # Append GPS Queue & Queue Update
         gps_all = torch.cat([gps, gps_queue], dim=0)
-        print(gps.shape)
-        print(gps_queue.shape)
-        print(gps_all.shape)
+        gps_all.to(device)
         model.dequeue_and_enqueue(gps)
 
         # Forward pass
-        print(imgs.shape, gps_all.shape)
         logits_img_gps = model(imgs, gps_all)
 
         # Compute the loss
