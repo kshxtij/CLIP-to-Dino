@@ -11,7 +11,7 @@ from PIL import Image
 from torchvision.transforms import ToPILImage
 
 class GeoCLIP(nn.Module):
-    def __init__(self, from_pretrained=True, queue_size=4096):
+    def __init__(self, from_pretrained=True, queue_size=64):
         super().__init__()
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
         self.image_encoder = ImageEncoder()
@@ -24,7 +24,7 @@ class GeoCLIP(nn.Module):
             self.weights_folder = os.path.join(file_dir, "weights")
             self._load_weights()
 
-        self.device = "cpu"
+        self.device = "mps"
 
     def to(self, device):
         self.device = device
@@ -74,7 +74,6 @@ class GeoCLIP(nn.Module):
         Returns:
             logits_per_image (torch.Tensor): Logits per image of shape (n, m)
         """
-
         # Compute Features
         image_features = self.image_encoder(image)
         location_features = self.location_encoder(location)

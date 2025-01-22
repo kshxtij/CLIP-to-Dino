@@ -7,21 +7,30 @@ def train(train_dataloader, model, optimizer, epoch, batch_size, device, schedul
     print("Starting Epoch", epoch)
 
     bar = tqdm(enumerate(train_dataloader), total=len(train_dataloader))
+    print(len(train_dataloader))
 
     targets_img_gps = torch.Tensor([i for i in range(batch_size)]).long().to(device)
 
     for i ,(imgs, gps) in bar:
-        imgs = imgs.to(device)
-        gps = gps.to(device)
+        imgs = imgs.view(64, 3, 224, 224).to(device)
+        latitude, longitude = gps[0], gps[1]
+        gps_stuff = torch.stack([latitude, longitude], dim=1)
+        gps_stuff = gps_stuff.to(torch.float32)
+        gps = gps_stuff.to(device)
         gps_queue = model.get_gps_queue()
+        gps_queue = gps_queue.to(device)
 
         optimizer.zero_grad()
 
         # Append GPS Queue & Queue Update
         gps_all = torch.cat([gps, gps_queue], dim=0)
+        print(gps.shape)
+        print(gps_queue.shape)
+        print(gps_all.shape)
         model.dequeue_and_enqueue(gps)
 
         # Forward pass
+        print(imgs.shape, gps_all.shape)
         logits_img_gps = model(imgs, gps_all)
 
         # Compute the loss
