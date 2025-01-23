@@ -11,7 +11,7 @@ from PIL import Image
 from torchvision.transforms import ToPILImage
 
 class GeoCLIP(nn.Module):
-    def __init__(self, from_pretrained=True, queue_size=64):
+    def __init__(self, from_pretrained=True, queue_size=256):
         super().__init__()
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
         self.image_encoder = ImageEncoder()

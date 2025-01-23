@@ -18,7 +18,7 @@ def distance_accuracy(targets, preds, dis=2500, gps_gallery=None):
     gd_avg /= total
     return correct / total, gd_avg
 
-def eval_images(val_dataloader, model, device="cpu"):
+def eval_images(val_dataloader, model, device="mps"):
     model.eval()
     preds = []
     targets = []
@@ -27,7 +27,7 @@ def eval_images(val_dataloader, model, device="cpu"):
 
     with torch.no_grad():
         for imgs, labels in tqdm(val_dataloader, desc="Evaluating"):
-            labels = labels.cpu().numpy()
+            labels = torch.tensor(labels).mps().numpy()
             imgs = imgs.to(device)
 
             # Get predictions (probabilities for each location based on similarity)
@@ -35,7 +35,7 @@ def eval_images(val_dataloader, model, device="cpu"):
             probs = logits_per_image.softmax(dim=-1)
             
             # Predict gps location with the highest probability (index)
-            outs = torch.argmax(probs, dim=-1).detach().cpu().numpy()
+            outs = torch.argmax(probs, dim=-1).detach().mps().numpy()
             
             preds.append(outs)
             targets.append(labels)
