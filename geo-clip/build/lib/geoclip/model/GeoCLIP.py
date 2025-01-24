@@ -11,10 +11,10 @@ from PIL import Image
 from torchvision.transforms import ToPILImage
 
 class GeoCLIP(nn.Module):
-    def __init__(self, from_pretrained=True, queue_size=64):
+    def __init__(self, from_pretrained=True, queue_size=64, query_images=True):
         super().__init__()
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
-        self.image_encoder = ImageEncoder()
+        self.image_encoder = ImageEncoder(query_images=query_images)
         self.location_encoder = LocationEncoder()
 
         self.gps_gallery = load_gps_data(os.path.join(file_dir, "gps_gallery", "coordinates_100K.csv"))

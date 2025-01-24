@@ -1,13 +1,12 @@
 import torch
 import torch.nn as nn
 from transformers import CLIPModel, AutoProcessor, CLIPTokenizer
-from torchvision import transforms
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='huggingface_hub.*')
 
 class ImageEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, query_images=True):
         super(ImageEncoder, self).__init__()
         self.CLIP = CLIPModel.from_pretrained("openai/clip-vit-large-patch14")
         self.image_processor = AutoProcessor.from_pretrained("openai/clip-vit-large-patch14")
@@ -15,6 +14,8 @@ class ImageEncoder(nn.Module):
         self.mlp = nn.Sequential(nn.Linear(768, 768),
                                  nn.ReLU(),
                                  nn.Linear(768, 512))
+        
+        self.query_images = query_images
 
         # Freeze CLIP
         for param in self.CLIP.parameters():
@@ -34,6 +35,9 @@ class ImageEncoder(nn.Module):
         return x
 
     def forward(self, x):
-        x = self.CLIP.get_text_features(input_ids=x)
+        if self.query_images:
+            x = self.CLIP.get_image_features(pixel_values=x)
+        else:
+            x = self.CLIP.get_text_features(input_ids=x)
         x = self.mlp(x)
         return x
