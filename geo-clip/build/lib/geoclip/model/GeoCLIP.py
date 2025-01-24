@@ -11,7 +11,7 @@ from PIL import Image
 from torchvision.transforms import ToPILImage
 
 class GeoCLIP(nn.Module):
-    def __init__(self, from_pretrained=True, queue_size=256):
+    def __init__(self, from_pretrained=True, queue_size=64):
         super().__init__()
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
         self.image_encoder = ImageEncoder()
@@ -111,6 +111,32 @@ class GeoCLIP(nn.Module):
 
         # Get top k predictions
         top_pred = torch.topk(probs_per_image, top_k, dim=1)
+        top_pred_gps = self.gps_gallery[top_pred.indices[0]]
+        top_pred_prob = top_pred.values[0]
+
+        return top_pred_gps, top_pred_prob
+    
+    @torch.no_grad()
+    def text(self, text, n):
+        """ Given a text, predict the top k GPS coordinates
+
+        Args:
+            text (str): Text to predict
+
+        Returns:
+            top_pred_gps (torch.Tensor): Top k GPS coordinates of shape (k, 2)
+            top_pred_prob (torch.Tensor): Top k GPS probabilities of shape (k,)
+        """
+        text = self.image_encoder.preprocess_text(text)
+        text = text.to(self.device)
+
+        gps_gallery = self.gps_gallery.to(self.device)
+
+        logits_per_image = self.forward(text, gps_gallery)
+        probs_per_image = logits_per_image.softmax(dim=-1).cpu()
+
+        # Get top k predictions
+        top_pred = torch.topk(probs_per_image, n, dim=1)
         top_pred_gps = self.gps_gallery[top_pred.indices[0]]
         top_pred_prob = top_pred.values[0]
 
