@@ -9,5 +9,4 @@ def load_gps_data(csv_file):
     data = pd.read_csv(csv_file)
     lat_lon = data[['LAT', 'LON']]
     gps_tensor = torch.tensor(lat_lon.values, dtype=torch.float32)
-    # only return 64 GPS coordinates
-    return gps_tensor[:64]
+    return gps_tensor

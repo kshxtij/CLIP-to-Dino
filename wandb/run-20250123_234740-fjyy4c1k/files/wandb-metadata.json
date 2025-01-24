@@ -1,0 +1,43 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit",
+  "python":  "CPython 3.12.2",
+  "startedAt":  "2025-01-23T23:47:41.105576Z",
+  "program":  "/Users/kshitij/Documents/University/Year4/MLP/Project/exploration.ipynb",
+  "codePath":  "exploration.ipynb",
+  "git":  {
+    "remote":  "git@github.com:kshxtij/CLIP-to-Dino.git",
+    "commit":  "db11c9fe7de81779ad968b9d512dc1c394a4033d"
+  },
+  "email":  "kshitij4sharma@gmail.com",
+  "root":  "/Users/kshitij/Documents/University/Year4/MLP/Project",
+  "host":  "Kshitijs-MacBook-Pro.local",
+  "executable":  "/Users/kshitij/miniconda3/envs/mlp/bin/python",
+  "codePathLocal":  "exploration.ipynb",
+  "cpu_count":  10,
+  "cpu_count_logical":  10,
+  "disk":  {
+    "/":  {
+      "total":  "994662584320",
+      "used":  "556349751296"
+    },
+    "/System/Volumes/Data":  {
+      "total":  "994662584320",
+      "used":  "556349751296"
+    }
+  },
+  "memory":  {
+    "total":  "68719476736"
+  },
+  "cpu":  {
+    "count":  10,
+    "countLogical":  10
+  },
+  "apple":  {
+    "name":  "Apple M1 Max",
+    "ecpuCores":  2,
+    "pcpuCores":  8,
+    "gpuCores":  32,
+    "memoryGb":  64,
+    "ramTotalBytes":  "68719476736"
+  }
+}

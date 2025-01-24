@@ -7,12 +7,11 @@ def train(train_dataloader, model, optimizer, epoch, batch_size, device, schedul
     print("Starting Epoch", epoch)
 
     bar = tqdm(enumerate(train_dataloader), total=len(train_dataloader))
-    print(len(train_dataloader))
-
+    
     targets_img_gps = torch.Tensor([i for i in range(batch_size)]).long().to(device)
 
     for i ,(imgs, gps) in bar:
-        imgs = imgs.view(64, 3, 224, 224).to(device)
+        imgs = imgs.to(device)
         latitude, longitude = gps[0], gps[1]
         gps_stuff = torch.stack([latitude, longitude], dim=1)
         gps_stuff = gps_stuff.to(torch.float32)
@@ -42,3 +41,5 @@ def train(train_dataloader, model, optimizer, epoch, batch_size, device, schedul
 
     if scheduler is not None:
         scheduler.step()
+
+    return loss.item()
